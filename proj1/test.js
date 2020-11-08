@@ -1,10 +1,23 @@
-let r = 5;
-let name = 0;
-do {
-    name = 50 + r;
-    console.log(name == undefined);
-    console.log(name == undefined || name < 1 || name > 50);
-    r--;
-} 
-while (name == undefined || name < 1 || name > 50);
-console.log(name);
+'use strict';
+
+let dictionary = Object.create(null, {
+    toString: { // определяем свойство toString
+      value() { // значение -- это функция
+        return Object.keys(this).join();
+      }
+    }
+  });
+
+
+
+// добавляем немного данных
+dictionary.apple = "Apple";
+dictionary.__proto__ = "test"; // здесь __proto__ -- это обычный ключ
+
+// только apple и __proto__ выведены в цикле
+for(let key in dictionary) {
+  alert(key); // "apple", затем "__proto__"
+}
+
+// ваш метод toString в действии
+alert(dictionary); // "apple,__proto__"
