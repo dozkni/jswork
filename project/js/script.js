@@ -29,11 +29,11 @@ document.querySelector('.promo__content').style.width = '100%';
 document.querySelector('.promo__genre').textContent = 'ДРАМА';
 document.querySelector('.promo__bg').style.backgroundImage = 'url("./img/bg.jpg")';
 
-const items = document.querySelectorAll('.promo__interactive-item');
-for (let i = 0; i < items.length; i++) {
-    if (i <= movieDB.movies.length) {
-        items[i].textContent = movieDB.movies[i];
-    } else {
-        items[i].remove();
-    }
-}
+const list = document.querySelector('.promo__interactive-list');
+list.innerHTML = '';
+movieDB.movies.sort();
+movieDB.movies.forEach((item, i) => {
+    list.innerHTML += `<li class="promo__interactive-item">${i + 1} ${item}
+                            <div class="delete"></div>
+                        </li>`;
+});
