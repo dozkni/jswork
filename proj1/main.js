@@ -9,8 +9,8 @@ const personalMovieDB = {
         do {
             numberOfFilms = +prompt('Сколько фильмов вы уже посмотрели?', '');
         } 
-        while (numberOfFilms == null || isNaN(numberOfFilms));
-        this.count = numberOfFilms;
+        while (!numberOfFilms);
+        personalMovieDB.count = numberOfFilms;
     },
     rememberMyFilms: () => {
         for (let i = 0; i < 2; i++) {
@@ -40,14 +40,16 @@ const personalMovieDB = {
     showMyDB: (hidden) => {
         if (!hidden) {console.log(personalMovieDB);}
     },
+    toggleVisibleMyDatabase: () => {
+        personalMovieDB.privat = !personalMovieDB.privat;
+    },
     writeYourGenres: () => {
-        for (let i = 1; i <= 3; i++) {
-            do {
-                genre = prompt(`Ваш любимый жанр под номером ${i}`, '');
-            } 
-            while (genre == null);
-            personalMovieDB.genres.push(genre);
+        personalMovieDB.genres.length = 0;
+        do {
+            genres = prompt(`ВВедите ваши любимые жанры через запятую`, '');
         }
+        while (genres == null || genres === '');
+        personalMovieDB.genres = genres.split(',');
     }
 };
 
