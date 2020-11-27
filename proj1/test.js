@@ -1,23 +1,25 @@
 'use strict';
 
-let dictionary = Object.create(null, {
-    toString: { // определяем свойство toString
-        value() { // значение -- это функция
-            return Object.keys(this).join();
-        }
-    }
+const act = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        console.log('first');
+        reject(new Error('error CATCH'));
+        //resolve('second');
+    }, 2000);
 });
+act.then(second => {
+        setTimeout(() => {
+            console.log(second);
+        }, 2000);
+    })
+    .catch((error) => console.log(error.message));
 
-
-
-// добавляем немного данных
-dictionary.apple = "Apple";
-dictionary.__proto__ = "test"; // здесь __proto__ -- это обычный ключ
-
-// только apple и __proto__ выведены в цикле
-for (let key in dictionary) {
-    alert(key); // "apple", затем "__proto__"
-}
-
-// ваш метод toString в действии
-alert(dictionary); // "apple,__proto__"
+fetch('https://jsonplaceholder.typicode.com/posts', {
+    method: 'POST',
+    body: JSON.stringify({name: 'Alex', title:'first post'}),
+    headers: {
+        'Content-type': 'application/json'
+    }
+})
+    .then(response => response.json())
+    .then(json => console.log(json));

@@ -3,31 +3,11 @@ document.addEventListener('DOMContentLoaded', () => {
     manageTabs();
     startTimer();
     modalWindow();
+    renderMenuCard();
 
-    new MenuCard(
-        "img/tabs/vegy.jpg",
-        "vegy",
-        'Меню "Фитнес"',
-        'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-        9,
-        '.menu .container'
-    ).render();
-    new MenuCard(
-        "img/tabs/elite.jpg",
-        "elite",
-        'Меню “Премиум”',
-        'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
-        20,
-        '.menu .container'
-    ).render();
-    new MenuCard(
-        "img/tabs/post.jpg",
-        "post",
-        'Меню "Постное"',
-        'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
-        16,
-        '.menu .container'
-    ).render();
+    // fetch('http://localhost:3000/menu')
+    // .then(data => data.json())
+    // .then(res => console.log(res));
 
 });
 
@@ -126,7 +106,6 @@ function startTimer() {
 function modalWindow() {
     
     const btnOpen = document.querySelectorAll('button[data-modal]'),
-          btnClose = document.querySelectorAll('[data-modal-close]'),
           modal = document.querySelector('.modal');
 
     const showModal = () => {
@@ -146,12 +125,8 @@ function modalWindow() {
         item.addEventListener('click', showModal);
     });
     
-    btnClose.forEach(item => {
-        item.addEventListener('click', hideModal);
-    });
-
     modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
+        if (e.target === modal || e.target.getAttribute('data-modal-close') == '') {
             hideModal();
         }
     });
@@ -194,15 +169,94 @@ function modalWindow() {
 
     window.addEventListener('scroll', showModalByScroll);
     window.addEventListener('scroll', calcMetric);
+
+    function showThanksModal(message) {
+        const prevModalDialog = document.querySelector('.modal__dialog');
+        prevModalDialog.classList.add('hide');
+        showModal();
+
+        const thanksModal = document.createElement('div');
+        thanksModal.classList.add('modal__dialog');
+        thanksModal.innerHTML = `
+            <div class="modal__content">
+                <div class="modal__close" data-modal-close>&times;</div>
+                <div class="modal__title">${message}</div>
+            </div>
+        `;
+        document.querySelector('.modal').append(thanksModal);
+
+        setTimeout(() => {
+            thanksModal.remove();
+            prevModalDialog.classList.add('show');
+            prevModalDialog.classList.remove('hide');
+            hideModal();
+        }, 4000);
+    }
+
+    const forms = document.querySelectorAll('form');
+    const messages = {
+        loading: 'img/spinner.svg',
+        sucsess: 'Спасибо! Мы скоро с вами свяжемся',
+        failure: 'Что-то пошло не так...'
+    };
+
+    forms.forEach(item => {
+        bindPostData(item);
+    });
+
+    const postData = async (url, data) => {
+        const res = await fetch(url, {
+            method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: data
+        });
+
+        return await res.json();
+    };
+
+    function bindPostData(form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const statusMessage = document.createElement('img');
+            statusMessage.src = messages.loading;
+            statusMessage.style.cssText = `
+                display: block;
+                margin: 0 auto;
+            `;
+            form.insertAdjacentElement('afterend', statusMessage);
+
+            const formData = new FormData(form);
+
+            const json = JSON.stringify(Object.fromEntries(formData.entries()));
+            
+            postData('http://localhost:3000/requests', json)
+            .then(data => {
+                console.log(data);
+                showThanksModal(messages.sucsess);
+            })
+            .catch(() => {
+                showThanksModal(messages.failure);
+            })
+            .finally(() => {
+                statusMessage.remove();
+                form.reset();
+            });
+
+        });
+    }
 }
 
 class MenuCard {
-    constructor(src, alt, title, descr, price, parentSelector) {
+    constructor(src, alt, title, descr, price, parentSelector, ...classes) {
         this.src = src;
         this.alt = alt;
         this.title = title;
         this.descr = descr;
         this.price = price;
+        this.classes = classes.length === 0 ? ['menu__item'] : classes;
         this.parent = document.querySelector(parentSelector);
         this.transfer = 68;
         this.changeToRUR();
@@ -214,7 +268,7 @@ class MenuCard {
 
     render() {
         const element = document.createElement('div');
-        element.classList.add('menu__item');
+        this.classes.forEach(item => element.classList.add(item));
         element.innerHTML = `
                     <img src=${this.src} alt=${this.alt}>
                     <h3 class="menu__item-subtitle">${this.title}</h3>
@@ -227,3 +281,25 @@ class MenuCard {
         this.parent.append(element);
     }
 }
+
+function renderMenuCard() {
+
+    const getResource = async url => {
+        const res = await fetch(url);
+        if (!res.ok) {
+            throw new Error(`Could not fetch ${url}, status ${res.status}`);
+        }
+
+        return await res.json();
+    };
+
+    getResource('http://localhost:3000/menu')
+        .then(data => {
+            data.forEach(({img, altimg, title, descr, price}) => {
+                new MenuCard(img, altimg, title, descr, price,
+                    '.menu .container', 'menu__item').render();
+            });
+        });
+    
+}
+
