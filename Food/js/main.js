@@ -1,3 +1,5 @@
+//import Customizator from './customizator';
+
 document.addEventListener('DOMContentLoaded', () => {
     
     manageTabs();
@@ -5,10 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     modalWindow();
     renderMenuCard();
 
-    // fetch('http://localhost:3000/menu')
-    // .then(data => data.json())
-    // .then(res => console.log(res));
-
+    // const panel = new Customizator();
+    // panel.render();
 });
 
 function manageTabs() {
