@@ -293,13 +293,21 @@ function renderMenuCard() {
         return await res.json();
     };
 
-    getResource('http://localhost:3000/menu')
+    axios.get('http://127.0.0.1:3000/menu')
         .then(data => {
-            data.forEach(({img, altimg, title, descr, price}) => {
+            data.data.forEach(({img, altimg, title, descr, price}) => {
                 new MenuCard(img, altimg, title, descr, price,
                     '.menu .container', 'menu__item').render();
+                });
             });
-        });
+
+    // getResource('http://localhost:3000/menu')
+    //     .then(data => {
+    //         data.forEach(({img, altimg, title, descr, price}) => {
+    //             new MenuCard(img, altimg, title, descr, price,
+    //                 '.menu .container', 'menu__item').render();
+    //         });
+    //     });
     
 }
 
