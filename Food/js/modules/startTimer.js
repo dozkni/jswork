@@ -1,6 +1,4 @@
-function startTimer() {
-
-    const deadline = '2020-11-20';
+function startTimer(timerSelector, deadline) {
 
     function getTimeRemaining(enddate) {
         const t = Date.parse(enddate) - Date.parse(new Date()),
@@ -48,7 +46,7 @@ function startTimer() {
         }
     }
 
-    setClock('.timer', deadline);
+    setClock(timerSelector, deadline);
     
 }
 

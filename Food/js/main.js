@@ -7,8 +7,8 @@ import manageCalculator from './modules/manageCalculator';
 
 document.addEventListener('DOMContentLoaded', () => {
     
-    manageTabs();
-    startTimer();
+    manageTabs('.tabheader__item', '.tabcontent', '.tabheader__items', 'tabheader__item_active');
+    startTimer('.timer', '2021-02-20');
     modalWindow('button[data-modal]', '.modal');
     renderMenuCard();
     manageSlides();
