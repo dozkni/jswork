@@ -32,6 +32,10 @@
       "name": "poiiuiuouoi",
       "phone": "5675",
       "id": 2
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 3
     }
   ]
 }
