@@ -465,7 +465,7 @@ function manageCalculator() {
     
                 calcTotal();
             });
-        })
+        });
     }
 
     getStaticInformation('#gender', 'calculating__choose-item_active');
