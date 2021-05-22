@@ -14,3 +14,19 @@
         from {opacity: 0.1;} to {opacity: 1;};
     }
 }
+
+.window_info {
+    position: fixed; 
+    top: 10px;
+    left: 10px;
+    flex-direction: column;
+    background-color: darkgreen; 
+    opacity: 0.4;
+    padding: 0.5em;
+}
+
+.text_info {
+    color: lightgreen;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+}

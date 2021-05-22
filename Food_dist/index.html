@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/add.css">
+    <link rel="stylesheet" href="add_css/add.css">
 </head>
 <body>
     <header class="header">
@@ -19,7 +19,7 @@
             </nav>
         </div>
         <div class="header__right-block">
-            <button class="btn btn_white">Связаться с нами</button>
+            <button class="btn btn_white" data-modal>Связаться с нами</button>
         </div>
     </header>
     <div class="sidepanel">
@@ -87,7 +87,7 @@
                 </div>
             </div>
             <div class="offer__action">
-                <button class="btn btn_dark">Связаться с нами</button>
+                <button class="btn btn_dark" data-modal>Связаться с нами</button>
             </div>
         </div>
         <div class="container">
@@ -292,7 +292,7 @@
         <div class="modal__dialog">
             <div class="modal__content">
                 <form action="#">
-                    <div class="modal__close">&times;</div>
+                    <div class="modal__close" data-close>&times;</div>
                     <div class="modal__title">Мы свяжемся с вами как можно быстрее!</div>
                     <input required placeholder="Ваше имя" name="name" type="text" class="modal__input">
                     <input required placeholder="Ваш номер телефона" name="phone" type="phone" class="modal__input">
@@ -300,6 +300,11 @@
                 </form>
             </div>
         </div>
+    </div>
+
+    <div class="window_info">
+        <div class="text_info" id="x1"></div>
+        <div class="text_info" id="x2"></div>
     </div>
 
     <script src='js/script.js'></script>

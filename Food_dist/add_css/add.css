@@ -30,4 +30,23 @@
     opacity: 1;
   }
 }
+
+.window_info {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  background-color: darkgreen;
+  opacity: 0.4;
+  padding: 0.5em;
+}
+
+.text_info {
+  color: lightgreen;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+}
 /*# sourceMappingURL=add.css.map */
