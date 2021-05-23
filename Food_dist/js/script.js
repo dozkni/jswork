@@ -144,4 +144,26 @@ window.addEventListener('DOMContentLoaded', () => {
         x2.innerHTML = Math.floor(document.documentElement.scrollHeight);
     });
 
+    // FORM
+
+    const forms = document.querySelectorAll('form');
+
+    function postData(form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const r = new XMLHttpRequest();
+            r.open('POST', 'server.php');
+            r.setRequestHeader('Content-type', 'multipart/form-data');
+            const formData = new FormData(form);
+            r.send(formData);
+
+            r.addEventListener('load', () => {
+                if (r.status === 200) {
+                    
+                }
+            });
+        });
+    }
+
 });
