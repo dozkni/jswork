@@ -97,8 +97,8 @@ window.addEventListener('DOMContentLoaded', () => {
     // MODAL
 
     const modal = document.querySelector('.modal'),
-          modalTrigger = document.querySelectorAll('[data-modal]'),
-          modalCloseBtn = document.querySelector('[data-close]');
+          modalTrigger = document.querySelectorAll('[data-modal]');
+          //modalCloseBtn = document.querySelector('[data-close]');
 
     function showModal() {
         modal.classList.toggle('show');
@@ -114,17 +114,17 @@ window.addEventListener('DOMContentLoaded', () => {
         item.addEventListener('click', showModal);
     });
 
-    modalCloseBtn.addEventListener('click', hideModal);
+    //modalCloseBtn.addEventListener('click', hideModal);
 
     modal.addEventListener('click', (e) => {
-        if (e.target === modal) hideModal();
+        if (e.target === modal || e.target.getAttribute('data-close') == '') hideModal();
     });
 
     window.addEventListener('keydown', (e) => {
         if (e.code === 'Escape' && modal.classList.contains('show')) hideModal();
     });
 
-    setTimeout(showModal, 5000);
+    setTimeout(showModal, 50000);
 
     function showModalInTheEnd() {
         if (window.pageYOffset + document.documentElement.clientHeight >=
@@ -217,23 +217,50 @@ window.addEventListener('DOMContentLoaded', () => {
 
             const request = new XMLHttpRequest();
             request.open('POST', 'server.php');
-            //r.setRequestHeader('Content-type', 'multipart/form-data');
-            request.send(new FormData(form));
+            request.setRequestHeader('Content-type', 'application/json');
+            const formData = new FormData(form);
+
+            const object = {};
+            formData.forEach((value, key) => {
+                object[key] = value;
+            });
+
+            request.send(JSON.stringify(object));
 
             request.addEventListener('load', () => {
                 if (request.status === 200) {
                     console.log(request.response);
-                    statusMessage.textContent = message.success;
+                    showThanksModal(message.success);
                     form.reset();
-                    setTimeout(() => {
-                        statusMessage.remove();
-                    }, 2000);
+                    statusMessage.remove();
                 } else {
-                    statusMessage.textContent = message.failure;
+                    showThanksModal(message.failure);
                 }
             });
         });
     }
     
+    function showThanksModal(message) {
+        const prevModalDialog = document.querySelector('.modal__dialog');
+        prevModalDialog.classList.add('hide');
+        showModal();
+
+        const thanksModal = document.createElement('div');
+        thanksModal.classList.add('modal__dialog');
+        thanksModal.innerHTML = `
+            <div class="modal__content">
+                <div class="modal__close" data-close>&times;</div>
+                <div class="modal__title">${message}</div>
+            </div> 
+        `;
+
+        document.querySelector('.modal').append(thanksModal);
+        setTimeout(() => {
+            thanksModal.remove();
+            prevModalDialog.classList.add('show');
+            prevModalDialog.classList.remove('hide');
+            hideModal();
+        }, 4000);
+    }
 
 });
