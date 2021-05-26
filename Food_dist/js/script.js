@@ -215,7 +215,7 @@ window.addEventListener('DOMContentLoaded', () => {
             body: data
         });
 
-        return res.json();
+        return await res.json();
     };
 
     function bindPostData(form) {
