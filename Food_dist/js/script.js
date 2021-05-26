@@ -101,12 +101,12 @@ window.addEventListener('DOMContentLoaded', () => {
           //modalCloseBtn = document.querySelector('[data-close]');
 
     function showModal() {
-        modal.classList.toggle('show');
+        modal.classList.add('show');
         document.body.style.overflow = 'hidden';
     }
 
     function hideModal() {
-        modal.classList.toggle('show');
+        modal.classList.remove('show');
         document.body.style.overflow = '';
     }
 
@@ -197,7 +197,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const forms = document.querySelectorAll('form');
 
     const message = {
-        loading: 'Загрузка',
+        loading: 'img/spinner.svg',
         success: 'Спасибо! Скоро мы с вами свяжемся',
         failure: 'Ошибка'
     };
@@ -206,37 +206,59 @@ window.addEventListener('DOMContentLoaded', () => {
         postData(item);
     });
 
-    function postData(form) {
+    const postData = async (url, data) => {
+        const res = await fetch(url, {
+            method: "POST",
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: data
+        });
+
+        return res.json();
+    };
+
+    function bindPostData(form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const statusMessage = document.createElement('div');
-            statusMessage.classList.add('status');
-            statusMessage.textContent = message.loading;
-            form.append(statusMessage);
+            const statusMessage = document.createElement('img');
+            //statusMessage.classList.add('status');
+            //statusMessage.textContent = message.loading;
+            statusMessage.src = message.loading;
+            statusMessage.style.cssText = `
+                display: 'block';
+                margin: 0 auto;
+            `;
+            //form.append(statusMessage);
+            form.insertAdjacentElement('afterend', statusMessage);
 
-            const request = new XMLHttpRequest();
-            request.open('POST', 'server.php');
-            request.setRequestHeader('Content-type', 'application/json');
+            //const request = new XMLHttpRequest();
+            //request.open('POST', 'server.php');
+            //request.setRequestHeader('Content-type', 'application/json');
             const formData = new FormData(form);
 
             const object = {};
             formData.forEach((value, key) => {
                 object[key] = value;
             });
+            
+            fetch('server.php', {
+                method: "POST",
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(object)
+            })
+            .then(data => data.text())
+            .then(data => {
+                console.log(data);
+                showThanksModal(message.success);
+                statusMessage.remove();
+            })
+            .catch(() => showThanksModal(message.failure))
+            .finally(() => form.reset());
 
-            request.send(JSON.stringify(object));
-
-            request.addEventListener('load', () => {
-                if (request.status === 200) {
-                    console.log(request.response);
-                    showThanksModal(message.success);
-                    form.reset();
-                    statusMessage.remove();
-                } else {
-                    showThanksModal(message.failure);
-                }
-            });
         });
     }
     
