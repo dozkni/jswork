@@ -172,25 +172,44 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function readTextFile(file, callback) {
-        var rawFile = new XMLHttpRequest();
-        rawFile.overrideMimeType("application/json");
-        rawFile.open("GET", file, true);
-        rawFile.onreadystatechange = function() {
-            if (rawFile.readyState === 4 && rawFile.status == "200") {
-                callback(rawFile.responseText);
-            }
-        };
-        rawFile.send(null);
-    }
-    
-    readTextFile("db.json", function(text){
-        const container = document.querySelector('.menu__field > .container');
-        const data = JSON.parse(text);
-        data.menu.forEach(item => {
-            new Card(item).render(container, ['menu__item']);
+    const getResource = async (url) => {
+        const res = await fetch(url);
+
+        if (!res.ok) {
+            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+        }
+
+        return await res.json();
+    };
+
+    const container = document.querySelector('.menu__field > .container');
+
+    getResource('http://localhost:3000/menu')
+        .then(data => {
+            data.forEach(obj => {
+                new Card(obj).render(container, ['menu__item']);
+            });
         });
-    });
+    
+    // function readTextFile(file, callback) {
+    //     var rawFile = new XMLHttpRequest();
+    //     rawFile.overrideMimeType("application/json");
+    //     rawFile.open("GET", file, true);
+    //     rawFile.onreadystatechange = function() {
+    //         if (rawFile.readyState === 4 && rawFile.status == "200") {
+    //             callback(rawFile.responseText);
+    //         }
+    //     };
+    //     rawFile.send(null);
+    // }
+    
+    // readTextFile("db.json", function(text){
+    //     const container = document.querySelector('.menu__field > .container');
+    //     const data = JSON.parse(text);
+    //     data.menu.forEach(item => {
+    //         new Card(item).render(container, ['menu__item']);
+    //     });
+    // });
 
     // FORM
 
@@ -203,7 +222,7 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     forms.forEach(item => {
-        postData(item);
+        bindPostData(item);
     });
 
     const postData = async (url, data) => {
@@ -223,34 +242,18 @@ window.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
 
             const statusMessage = document.createElement('img');
-            //statusMessage.classList.add('status');
-            //statusMessage.textContent = message.loading;
             statusMessage.src = message.loading;
             statusMessage.style.cssText = `
                 display: 'block';
                 margin: 0 auto;
             `;
-            //form.append(statusMessage);
             form.insertAdjacentElement('afterend', statusMessage);
 
-            //const request = new XMLHttpRequest();
-            //request.open('POST', 'server.php');
-            //request.setRequestHeader('Content-type', 'application/json');
-            const formData = new FormData(form);
+            const fd = new FormData(form);
 
-            const object = {};
-            formData.forEach((value, key) => {
-                object[key] = value;
-            });
+            const json = JSON.stringify(Object.fromEntries(fd.entries()));
             
-            fetch('server.php', {
-                method: "POST",
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify(object)
-            })
-            .then(data => data.text())
+            postData('http://localhost:3000/requests', json)
             .then(data => {
                 console.log(data);
                 showThanksModal(message.success);
