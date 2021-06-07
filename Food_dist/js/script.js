@@ -374,9 +374,18 @@ window.addEventListener('DOMContentLoaded', () => {
     // CALC 
 
     const result = document.querySelector('.calculating__result span');
-    let sex = 'female', 
-        height, weight, age, 
-        ratio = 1.375;
+
+    function getValFromLocalStorage(name, def) {
+        if (localStorage.getItem(name)) {
+            return localStorage.getItem(name);
+        } else {
+            return def;
+        }
+    }
+
+    let sex = getValFromLocalStorage('sex'), 
+        height, weight, age,   
+        ratio = getValFromLocalStorage('ratio');
 
     function calcTotal() {
         if (!sex || !height || !weight || !age || !ratio) {
@@ -402,8 +411,10 @@ window.addEventListener('DOMContentLoaded', () => {
             item.addEventListener('click', e => {
                 if (e.target.getAttribute('data-ratio')) {
                     ratio = +e.target.getAttribute('data-ratio');
+                    localStorage.setItem('ratio', ratio);
                 } else {
                     sex = e.target.getAttribute('id');
+                    localStorage.setItem('sex', sex);
                 }
     
                 elements.forEach(elem => {
@@ -425,6 +436,13 @@ window.addEventListener('DOMContentLoaded', () => {
         const input = document.querySelector(selector);
 
         input.addEventListener('input', () => {
+
+            if (input.value.match(/\D/g)) {
+                input.style.border = '1px solid red';
+            } else {
+                input.style.border = 'none';
+            }
+
             switch(input.getAttribute('id')) {
                 case 'height':
                     height = +input.value;
