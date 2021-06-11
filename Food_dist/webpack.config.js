@@ -6,7 +6,7 @@ module.exports = {
     mode: 'development',
     entry: './js/script.js',
     output: {
-        filename: 'bindle.js',
+        filename: 'bundle.js',
         path: __dirname + '/js'
     },
     watch: true,

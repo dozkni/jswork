@@ -18,10 +18,16 @@ function slider() {
     for (let i = 0; i < slides.length; i++) {
         const el_bar = document.createElement('div');
         el_bar.classList.add('bar');
-        el_bar.setAttribute('data-num', i + 1);
+        el_bar.setAttribute('data-slide-num', i + 1);
         slider_nav.append(el_bar);
         bars.push(el_bar);
     }
+
+    bars.forEach(item => {
+        item.addEventListener('click', e => {
+            showSlides(item.getAttribute('data-slide-num'));
+        });
+    });
 
     showSlides(slideIndex);
 
