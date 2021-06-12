@@ -232,7 +232,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function form() {
+/* harmony import */ var _modal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modal */ "./js/modules/modal.js");
+
+
+function form(modalTimerId) {
     
     // FORM
 
@@ -291,7 +294,7 @@ function form() {
     function showThanksModal(message) {
         const prevModalDialog = document.querySelector('.modal__dialog');
         prevModalDialog.classList.add('hide');
-        showModal();
+        (0,_modal__WEBPACK_IMPORTED_MODULE_0__.showModal)('.modal', modalTimerId);
 
         const thanksModal = document.createElement('div');
         thanksModal.classList.add('modal__dialog');
@@ -307,7 +310,7 @@ function form() {
             thanksModal.remove();
             prevModalDialog.classList.add('show');
             prevModalDialog.classList.remove('hide');
-            hideModal();
+            (0,_modal__WEBPACK_IMPORTED_MODULE_0__.hideModal)();
         }, 4000);
     }
 
@@ -325,46 +328,52 @@ function form() {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   "showModal": () => (/* binding */ showModal),
+/* harmony export */   "hideModal": () => (/* binding */ hideModal)
 /* harmony export */ });
-function modal() {
+function showModal(modalSelector, modalTimerId) {
+    const modal = document.querySelector(modalSelector);
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+
+    if (modalTimerId) {
+        clearInterval(modalTimerId);
+    }
+}
+
+function hideModal(modalSelector) {
+    const modal = document.querySelector(modalSelector);
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+function modal(triggerSelector, modalSelector, modalTimerId) {
 
     // MODAL
 
-    const modal = document.querySelector('.modal'),
-          modalTrigger = document.querySelectorAll('[data-modal]');
+    const modal = document.querySelector(modalSelector),
+          modalTrigger = document.querySelectorAll(triggerSelector);
           //modalCloseBtn = document.querySelector('[data-close]');
 
-    function showModal() {
-        modal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function hideModal() {
-        modal.classList.remove('show');
-        document.body.style.overflow = '';
-    }
-
     modalTrigger.forEach(item => {
-        item.addEventListener('click', showModal);
+        item.addEventListener('click', () => showModal(modalSelector, modalTimerId));
     });
 
     //modalCloseBtn.addEventListener('click', hideModal);
 
     modal.addEventListener('click', (e) => {
-        if (e.target === modal || e.target.getAttribute('data-close') == '') hideModal();
+        if (e.target === modal || e.target.getAttribute('data-close') == '') hideModal(modalSelector);
     });
 
     window.addEventListener('keydown', (e) => {
-        if (e.code === 'Escape' && modal.classList.contains('show')) hideModal();
+        if (e.code === 'Escape' && modal.classList.contains('show')) hideModal(modalSelector);
     });
-
-    setTimeout(showModal, 50000);
 
     function showModalInTheEnd() {
         if (window.pageYOffset + document.documentElement.clientHeight >=
             document.documentElement.scrollHeight) {
-                showModal();
+                showModal(modalSelector, modalTimerId);
                 window.removeEventListener('scroll', showModalInTheEnd);
             }
     }
@@ -382,6 +391,7 @@ function modal() {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (modal);
+
 
 /***/ }),
 
@@ -690,13 +700,16 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 window.addEventListener('DOMContentLoaded', () => {
 
+    const modalTimerId = setTimeout(() => (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__.showModal)('.modal', modalTimerId), 50000);
+
     (0,_modules_tabs__WEBPACK_IMPORTED_MODULE_0__.default)();
-    (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__.default)();
+    (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__.default)('[data-modal]', '.modal', modalTimerId);
     (0,_modules_timer__WEBPACK_IMPORTED_MODULE_2__.default)();
     (0,_modules_cards__WEBPACK_IMPORTED_MODULE_3__.default)();
-    (0,_modules_form__WEBPACK_IMPORTED_MODULE_4__.default)();
+    (0,_modules_form__WEBPACK_IMPORTED_MODULE_4__.default)(modalTimerId);
     (0,_modules_calc__WEBPACK_IMPORTED_MODULE_5__.default)();
     (0,_modules_slider__WEBPACK_IMPORTED_MODULE_6__.default)();
 

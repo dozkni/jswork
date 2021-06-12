@@ -1,4 +1,6 @@
-function form() {
+import {showModal, hideModal} from './modal';
+
+function form(modalTimerId) {
     
     // FORM
 
@@ -57,7 +59,7 @@ function form() {
     function showThanksModal(message) {
         const prevModalDialog = document.querySelector('.modal__dialog');
         prevModalDialog.classList.add('hide');
-        showModal();
+        showModal('.modal', modalTimerId);
 
         const thanksModal = document.createElement('div');
         thanksModal.classList.add('modal__dialog');
