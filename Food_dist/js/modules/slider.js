@@ -1,14 +1,22 @@
-function slider() {
+function slider({
+    slidesSelector,
+    prevSelector,
+    nextSelector,
+    totalSelector,
+    currentSelector,
+    slider_wrapperSelector,
+    slider_navSelector
+}) {
     
     // SLIDER
 
-    const slides = document.querySelectorAll('.offer__slide'),
-          prev = document.querySelector('.offer__slider-prev'),
-          next = document.querySelector('.offer__slider-next'),
-          total = document.querySelector('#total'),
-          current = document.querySelector('#current'),
-          slider_wrapper = document.querySelector('.offer__slider-wrapper'),
-          slider_nav = document.querySelector('.slider-nav');
+    const slides = document.querySelectorAll(slidesSelector),
+          prev = document.querySelector(prevSelector),
+          next = document.querySelector(nextSelector),
+          total = document.querySelector(totalSelector),
+          current = document.querySelector(currentSelector),
+          slider_wrapper = document.querySelector(slider_wrapperSelector),
+          slider_nav = document.querySelector(slider_navSelector);
     let slideIndex = 1;
 
     slider_wrapper.style.position = 'relative';
@@ -22,12 +30,6 @@ function slider() {
         slider_nav.append(el_bar);
         bars.push(el_bar);
     }
-
-    bars.forEach(item => {
-        item.addEventListener('click', e => {
-            showSlides(item.getAttribute('data-slide-num'));
-        });
-    });
 
     showSlides(slideIndex);
 
@@ -76,7 +78,7 @@ function slider() {
 
     slider_nav.addEventListener('click', e => {
         if (e.target.classList.contains('bar')) {
-            slideIndex = e.target.getAttribute('data-slide-num');
+            slideIndex = +e.target.getAttribute('data-slide-num');
             showSlides(slideIndex);
         }
     });
